@@ -7,7 +7,7 @@ import javax.swing.*;
 
 class BackgroundLayer extends JPanel {
     protected BufferedImage bgImage;
-    protected String description = "Base Layer: BG";
+    protected String description = ".";
     protected final Dimension CANVAS_SIZE = new Dimension(640, 1080);
 
     public BackgroundLayer() {
@@ -23,6 +23,19 @@ class BackgroundLayer extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.drawImage(bgImage, 0, 0, CANVAS_SIZE.width, CANVAS_SIZE.height, null);
+        // Removed drawDescription() here
+    }
+
+    protected void drawDescription(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+        // Optional: background box
+        g2d.setColor(new Color(0, 0, 0, 150)); // Semi-transparent black
+        g2d.fillRect(0, 1030, CANVAS_SIZE.width, 50);
+
+        // Draw description text
+        g2d.setColor(new Color(50, 255, 50));
+        g2d.setFont(new Font("Arial", Font.BOLD, 20));
+        g2d.drawString(description, 20, 500);
     }
 
     @Override
@@ -38,7 +51,7 @@ class AnswerLayer extends BackgroundLayer {
         super();
         try {
             answerImage = ImageIO.read(new File("answer.png"));
-            description += " + Answer Layer";
+            description += " with your Answer";
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -58,7 +71,7 @@ class ChapterLayer extends AnswerLayer {
         super();
         try {
             chapterImage = ImageIO.read(new File("chapter.png"));
-            description += " + Chapter Layer";
+            description += " 14";
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -78,7 +91,7 @@ class QuestionLayer extends ChapterLayer {
         super();
         try {
             questionImage = ImageIO.read(new File("question.png"));
-            description += " + Question Layer";
+            description += " + the questions,";
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -101,11 +114,12 @@ class RandomLayer extends QuestionLayer {
             if (Math.random() < 0.5) {
                 randomImage = ImageIO.read(new File("66.png"));
                 layerName = "Layer 66";
+                description += " your final grade is 66";
             } else {
                 randomImage = ImageIO.read(new File("99.png"));
                 layerName = "Layer 99";
+                description += "your final grade is 99";
             }
-            description += " + " + layerName;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -116,10 +130,8 @@ class RandomLayer extends QuestionLayer {
         super.paintComponent(g);
         g.drawImage(randomImage, 0, 0, CANVAS_SIZE.width, CANVAS_SIZE.height, null);
 
-        // Draw description at bottom
-        g.setColor(new Color(50, 255, 50));
-        g.setFont(new Font("Arial", Font.BOLD, 20));
-        g.drawString(description, 20, 1060);
+        // Draw description at the END so it stays on top
+        drawDescription(g);
     }
 }
 
